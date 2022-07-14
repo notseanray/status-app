@@ -3,32 +3,29 @@ import { StyleSheet, Text, View, SafeAreaView, TextInput, Button } from 'react-n
 import { load_relay_ips, save_relay_ips } from './src/storage';
 import React from 'react';
 const axios = require('axios').default;
+let details: any = [];
 
-const MyComponent = () => {
-
-  return <Text>Hello world</Text>;
-};
-
-setInterval(() => {
-  //let newServers = servers;
+export default function App() {
   for (const server of load_relay_ips()) {
     axios.get("http://" + server)
       .then((response: { data: any }) => {
         if (!response.data) {
           return;
         }
+        details = [];
         for (let i = 0; i < response.data.length; i ++) {
           console.log(response.data[i].host_name)
           const r = response.data[i];
-          // newServers.push({ name: response.data[i].host_name, ip: )
+          details.push(<div key={r.host_name + "|" + r.ip}>
+            Host Name: {r.host_name}  CPU Temp {r.cpu_temp ? r.cpu_temp.toFixed(1) : 0}°C<br />
+            IP: {r.ip} <br />
+            LA: {r.load_avg.join(" ")} <br />
+            RAM: {((r.memory_used / r.memory_total) * 100).toFixed(2)}% <br />
+            UPTIME: {(r.uptime / 3600).toFixed(1)} hrs <br />
+          </div>)
         }
       })
   }
-  //serverUpdate(newServers);
-}, 10000);
-
-export default function App() {
-  console.log("s")
   const [text, onChangeText] = React.useState("");
   let [relay, RelayUpdate] = React.useState(load_relay_ips());
   const [, updateState] = React.useState();
@@ -44,43 +41,49 @@ export default function App() {
           save_relay_ips(relay);
         }}
         title={ip.toString()}
-        color="#841584"
+        color="#373737"
       />
     </div>);
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello world</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder={"Add relay"}
-        value={text}
-      />
-      <Button
-        onPress={() => {
-          if (!relay.includes(text)) {
-            if (text && text.length > 1) {
-              let updated = relay;
-              updated.push(text);
-              RelayUpdate(updated);
-              onChangeText(text);
-              save_relay_ips(relay);
+      <Text style={styles.text}>Server Status</Text>
+      <div className="styles.relayBox">
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeText}
+          placeholder={"add relay"}
+          value={text}
+        />
+        <Button
+          onPress={() => {
+            if (!relay.includes(text)) {
+              if (text && text.length > 1) {
+                let updated = relay;
+                updated.push(text);
+                RelayUpdate(updated);
+                onChangeText(text);
+                save_relay_ips(relay);
+              }
             }
-          }
-          onChangeText("");
-          forceUpdate();
-        }}
-        title="add/refresh"
-        color="#841584"
-      />
+            onChangeText("");
+            forceUpdate();
+          }}
+          title="add/refresh"
+          color="#373737"
+        />
+      </div>
       <Text>{final}</Text>
+      <Text style={styles.text}>{details}</Text>
       <StatusBar style="auto" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  relayBox: {
+    display: 'flex',
+  },
   container: {
     flex: 1,
     backgroundColor: '#000',
@@ -90,15 +93,15 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
+    fontWeight: 'bold',
   },
   input: {
+    width: '15em',
+    borderRadius: 3,
+    padding: 5,
     color: '#fff',
-    backgroundColor: '#194D33',
+    backgroundColor: '#474747',
     height: 40,
-    margin: 12,
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
   },
 });
 
