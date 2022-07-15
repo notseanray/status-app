@@ -11,6 +11,7 @@
     "dev:tailwind": "concurrently \"tailwindcss --input input.css --output tailwind.css --no-autoprefixer --watch\" \"tailwind-rn --watch\""
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.1",
     "async-storage": "^0.1.0",
     "axios": "^0.27.2",
     "expo": "~45.0.0",
@@ -25,6 +26,7 @@
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1",
+    "sync-storage": "^0.4.2",
     "tailwind-rn": "^4.2.0"
   },
   "devDependencies": {
