@@ -4,7 +4,7 @@
   "lang": "en",
   "name": "StatusApp",
   "short_name": "StatusApp",
-  "start_url": "/",
+  "start_url": "/status-app",
   "orientation": "portrait",
   "related_applications": [
     {
